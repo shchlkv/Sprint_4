@@ -1,7 +1,5 @@
 package page;
 import org.openqa.selenium.*;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -11,8 +9,9 @@ public class OrderPage {
     private final WebDriver driver;
     //1я страница
     private final By buttonCookie = id("rcc-confirm-button"); //кнопка антикуки
-    //private final By buttonOrderUp = className("Button_Button__ra12g"); //кнопка Заказать верхняя
-    // private final By buttonOrderDawn = xpath("//div[@class='Home_FinishButton__1_cWm']//button[text()='Заказать']"); //кнопка Заказать нижняя
+    private final By buttonOrderUp = By.className("Button_Button__ra12g"); //кнопка Заказать верхняя
+    private final By buttonOrderDawn = xpath("//div[@class='Home_FinishButton__1_cWm']//button[text()='Заказать']"); //кнопка Заказать нижняя
+
     //2я страница
     private final By fieldName = xpath("//input[@placeholder='* Имя']"); //Имя.
     private final By fieldSecondName = xpath("//div[@class='Input_InputContainer__3NykH']//input[@placeholder='* Фамилия']"); //Фамилия
@@ -41,13 +40,15 @@ public class OrderPage {
         ((JavascriptExecutor)driver).executeScript("arguments[0].scrollIntoView();", driver.findElement(buttonCookie));
         driver.findElement(buttonCookie).click();
     }
-    public void findButtonAndOrder(By buttonOrder) {
-        new WebDriverWait(driver, 5).until(ExpectedConditions.visibilityOfElementLocated(buttonOrder));
-        Object elementOrderButton = driver.findElement(buttonOrder);
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView();", elementOrderButton);
-        new WebDriverWait(driver, 5).until(ExpectedConditions.elementToBeClickable(buttonOrder));
-        driver.findElement(buttonOrder).click();
+
+    public void findButtonAndOrder(String buttonOrder) {
+        if (buttonOrder.equals("0")) {
+            driver.findElement(buttonOrderUp).click();
+        } else {
+            driver.findElement(buttonOrderDawn).click();
+        }
     }
+
     public void userName(String firstName){
         driver.findElement(fieldName).sendKeys(firstName);
     }
@@ -90,9 +91,7 @@ public class OrderPage {
     public void confirmButton() {
         driver.findElement(confirmButton).click();
     }
-
-
-    public boolean CreatedOrder() {
+    public boolean createdOrder() {
         try {
             return driver.findElement(orderCreated).isDisplayed();
         } catch (NoSuchElementException e) {

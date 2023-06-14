@@ -3,7 +3,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 //import org.openqa.selenium.firefox.FirefoxDriver;
@@ -12,19 +11,19 @@ import page.OrderPage;
 import java.util.concurrent.TimeUnit;
 
 @RunWith(Parameterized.class)
-public class testOrder {
+public class TestOrder {
 
     WebDriver driver = new ChromeDriver();
-    // WebDriver driver = new FirefoxDriver();
+   //  WebDriver driver = new FirefoxDriver();
 
-    final By buttonOrder;
+    final String buttonOrder;
     final String firstName;
     final String name;
     final String address;
     final String phone;
     final String comment;
 
-    public testOrder(By buttonOrder, String firstName, String name, String address, String phone, String comment) {
+    public TestOrder(String buttonOrder, String firstName, String name, String address, String phone, String comment) {
         this.buttonOrder = buttonOrder;
         this.firstName = firstName;
         this.name = name;
@@ -34,13 +33,12 @@ public class testOrder {
 
     }
     @Parameterized.Parameters
-    public static Object[][] Parameters() {
+    public static Object[][] parameters() {
         return new Object[][] {
-                {By.className("Button_Button__ra12g"), "Петров", "Иван", "Адрес 1", "+7999999999", "пивка захвати"}, //заказ через верхнюю кнопку
-                {By.xpath("//div[@class='Home_FinishButton__1_cWm']//button[text()='Заказать']"), "Петров", "Иван", "Адрес 1", "+7999999999", "без комментариев"} //заказ через нижнюю кнопку
+                {"0", "Петров", "Иван", "Адрес 1", "+7999999991", "пивка захвати"}, //заказ через верхнюю кнопку
+                {"1", "Иванов", "Петр", "Адрес 2", "+7999999992", "без комментариев"} //заказ через нижнюю кнопку
         };
     }
-
 
     @Before
     public void startUp() {
@@ -66,7 +64,7 @@ public class testOrder {
         objOrderPage.userComment(comment);
         objOrderPage.orderButton();
         objOrderPage.confirmButton();
-        assertTrue("Тест отработал с ошибкой: ", objOrderPage.CreatedOrder());
+        assertTrue("Тест отработал с ошибкой: ", objOrderPage.createdOrder());
     }
 
     @After

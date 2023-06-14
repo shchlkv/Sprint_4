@@ -2,11 +2,14 @@ package page;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import static org.junit.Assert.assertEquals;
 
 public class MainPage {
 
     private final WebDriver driver;
+
     public MainPage(WebDriver driver) {
         this.driver = driver;
     }
@@ -34,16 +37,11 @@ public class MainPage {
             // By item2 =  By.xpath("//div[@id='accordion__panel-"+i+"']"); // тоже рабочий вариант
 
             System.out.println(expectedText[i]);
-            try {
-                Thread.sleep(500); // задержка , чтобы при необходимости, визуально проконтролировать, что все пункты "О важном" перебраны
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
 
+            new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOfElementLocated(item2));
 
             String actualText = driver.findElement(item2).getText();
 
-            //  System.out.println(actualText);
             assertEquals("Текст не совпадает для строки " + i, expectedText[i], actualText);
         }
 
