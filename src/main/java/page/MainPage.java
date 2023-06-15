@@ -2,49 +2,26 @@ package page;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import static org.junit.Assert.assertEquals;
-
 public class MainPage {
-
     private final WebDriver driver;
-
-    public MainPage(WebDriver driver) {
+    private final By arrowExpandText; // стрелка раскрыть список
+    private final By answerText;
+    public MainPage(WebDriver driver, int questionIndex) {
         this.driver = driver;
+        arrowExpandText = By.id(String.format("accordion__heading-%d", questionIndex));
+        answerText = By.id(String.format("accordion__panel-%d", questionIndex));
     }
-
-
-    //вопросы о важном. сравниваем, что вопросы в массиве == вопросам на странице
-
-    public void clickImportantQuestion() {
-        String[] expectedText = {"Сутки — 400 рублей. Оплата курьеру — наличными или картой.",
-                "Пока что у нас так: один заказ — один самокат. Если хотите покататься с друзьями, можете просто сделать несколько заказов — один за другим.",
-                "Допустим, вы оформляете заказ на 8 мая. Мы привозим самокат 8 мая в течение дня. Отсчёт времени аренды начинается с момента, когда вы оплатите заказ курьеру. Если мы привезли самокат 8 мая в 20:30, суточная аренда закончится 9 мая в 20:30.",
-                "Только начиная с завтрашнего дня. Но скоро станем расторопнее.",
-                "Пока что нет! Но если что-то срочное — всегда можно позвонить в поддержку по красивому номеру 1010.",
-                "Самокат приезжает к вам с полной зарядкой. Этого хватает на восемь суток — даже если будете кататься без передышек и во сне. Зарядка не понадобится.",
-                "Да, пока самокат не привезли. Штрафа не будет, объяснительной записки тоже не попросим. Все же свои.",
-                "Да, обязательно. Всем самокатов! И Москве, и Московской области."}; //можешь чего-нибудь исправить, чтобы получить ошибку
-
-        for (int i = 0; i <8 ; i++) {
-
-            By item = By.id("accordion__heading-"+i);
-            ((JavascriptExecutor)driver).executeScript("arguments[0].scrollIntoView();", driver.findElement(item));
-            driver.findElement(item).click();
-
-            By item2 = By.id("accordion__panel-"+i); // рабочий вариант
-            // By item2 =  By.xpath("//div[@id='accordion__panel-"+i+"']"); // тоже рабочий вариант
-
-            System.out.println(expectedText[i]);
-
-            new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOfElementLocated(item2));
-
-            String actualText = driver.findElement(item2).getText();
-
-            assertEquals("Текст не совпадает для строки " + i, expectedText[i], actualText);
-        }
-
+    public void clickArrow() {
+        new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOfElementLocated(arrowExpandText));
+        WebElement element = driver.findElement(arrowExpandText);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView();", element);
+        element.click();
+    }
+    public String getAnswer() {
+        new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOfElementLocated(answerText));
+        return driver.findElement(answerText).getText();
     }
 }
-
